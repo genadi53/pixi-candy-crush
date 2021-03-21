@@ -111,15 +111,11 @@ export default class GameBoard extends Container {
             checkedHorizontal = false;
 
           if (col === COLUMNS-1) {
-              // Last tile
               checkedHorizontal = true;
           } else {
-              // Check the type of the next tile
               if(this._squares[row][col]._texture === this._squares[row][col+1]._texture){
-                  // Same type as the previous tile, increase matchlength
                   matchLength += 1;
               } else {
-                  // Different type
                   checkedHorizontal = true;
               }
           }
@@ -142,36 +138,28 @@ export default class GameBoard extends Container {
         let checkedVertical = false;
 
         
-   // Find vertical matches
+   
    for (let col = 0; col < 6; col++) {
-    // Start with a single tile, match of 1
     matchLength = 1;
     for (let row = 0; row < 6; row++) {
         checkedVertical = false;
-        
+
         if (row === ROWS-1) {
-            // Last tile
             checkedVertical = true;
         } else {
-            // Check the type of the next tile
             if (this._squares[row][col]._texture === this._squares[row+1][col]._texture) {
-                // Same type as the previous tile, increase matchLength
                 matchLength += 1;
             } else {
-                // Different type
                 checkedVertical = true;
             }
         }
-        
-        // Check if there was a match
+    
         if (checkedVertical) {
             if (matchLength >= 3) {
-                // Found a vertical match
                 console.log(`row: ${row+1-matchLength}\ncolumn: ${col}\nlenght: ${matchLength}\nvertical`)
                 this.matches.push({ column: col, row:row+1-matchLength,
                     length: matchLength, horizontal: false });
             }
-            
             matchLength = 1;
         }
     }
@@ -259,14 +247,6 @@ export default class GameBoard extends Container {
                 }
                 row--;
             }
-
-            // for (let row = 6-1; row >= 0; row--) {
-            
-            //     if(this._squares[row][col]._texture === -1){
-            //         //console.log(row + ' ' + col + ' space')
-
-            //     }
-            // }
         }
     }
 
@@ -298,37 +278,6 @@ export default class GameBoard extends Container {
         }
     }
     
-    moveTiles(row1, col1, row2, col2) {
-        console.log(row1, row2, col1, col2);
-        
-        if(row1 === row2 && col1 < col2){
-            return {
-                tile1: 'right',
-                tile2: 'left'
-            }
-        }
-    
-        if(row1 === row2 && col1 < col2){
-            return {
-                tile1: 'left',
-                tile2: 'right'
-            }
-        }
-    
-        if(row1 > row2 && col1 === col2){
-            return {
-                tile1: 'up',
-                tile2: 'down'
-            }
-        }
-    
-        if(row1 < row2 && col1 === col2){
-            return {
-                tile1: 'down',
-                tile2: 'up'
-            }
-        }
-    }
 
     swap(row1, col1, row2, col2) {
     
@@ -362,7 +311,6 @@ export default class GameBoard extends Container {
             }
 
         }
-        // swap coordinates and array pos
 
     }
 
@@ -388,11 +336,7 @@ export default class GameBoard extends Container {
 
     onDragStart(event){
 
-
-        // take position and selection and set them to global var and in other func(swap mb) deal with them
-
-
-        let squareBeingDragged = { 
+        let currentSquare = { 
             id: this._id,
             row: this.row,
             col: this.col,
@@ -402,14 +346,12 @@ export default class GameBoard extends Container {
         this.data = event.data;
         this.dragging = true;
 
-        //console.log(this.parent._squares[selectedTile.row][selectedTile.column])
 
         if(!selectedTile.selected){
             selectedTile.selected = true;
             selectedTile.row = this.row;
             selectedTile.column = this.col;
 
-            //console.log(this.parent._squares[selectedTile.row][selectedTile.column].alpha)
             this.alpha = 0.5;
 
 
@@ -448,85 +390,6 @@ export default class GameBoard extends Container {
 
        
         }
-
-
-            // if(selectedTile.selected){
-
-            //     if(selectedTile.row === this.row && selectedTile.column === this.col){
-
-            //         selectedTile.selected = false;
-            //         selectedTile.row = -1;
-            //         selectedTile.column = -1;
-
-            //         this.selected = false; 
-            //         this.alpha = 1;
-
-
-            //     } else if(!this.parent.isAdjacent(selectedTile.row, selectedTile.column, this.row, this.col)){
-                 
-            //         selectedTile.selected = false;
-            //         selectedTile.row = -1;
-            //         selectedTile.column = -1;
-
-            //         this.selected = false; 
-            //         this.alpha = 1;
-
-            //     } else {
-
-            //         this.parent.swap(selectedTile.row, selectedTile.column, this.row, this.col)
-                   
-            //         selectedTile.selected = false;
-            //         selectedTile.row = -1;
-            //         selectedTile.column = -1;
-
-            //         this.selected = false; 
-            //         this.alpha = 1;
-    
-            //     }
-    
-            // } else {
-
-            //     selectedTile.selected = true;
-            //     selectedTile.row = this.row;
-            //     selectedTile.column = this.col;
-
-            //     this.selected = true; 
-            //     this.alpha = 0.5;
-            // }
-
-
-       
-
-        // if(selectedTile.selected){
-
-        //     if(selectedTile.row === this.row && selectedTile.column === this.col){
-        //         selectedTile.selected = false;
-        //         selectedTile.row = -1;
-        //         selectedTile.column = -1;
-        //     } else if(!this.parent.isAdjacent(selectedTile.row, selectedTile.column, this.row, this.col)){
-        //         console.log('not adjacent');
-        //         selectedTile.selected = false;
-        //         selectedTile.row = -1;
-        //         selectedTile.column = -1;
-        //     } else {
-        //         console.log('adjasent')
-        //         this.parent.swap(selectedTile.row, selectedTile.column, this.row, this.col)
-        //         selectedTile.selected = false;
-        //         selectedTile.row = -1;
-        //         selectedTile.column = -1;
-
-        //     }
-
-        // } else {
-        //     selectedTile.selected = true;
-        //     selectedTile.row = this.row;
-        //     selectedTile.column = this.col;
-        // }
-
-      
-        //console.log(squareBeingDragged)
-        //console.log(selectedTile);
-        //console.log(event.data.getLocalPosition(this.parent))
     } 
 
     getMousePos(canvas, e) {
@@ -538,15 +401,6 @@ export default class GameBoard extends Container {
     }
 
     _addEventsListeners(){
-
-         //this._squares.forEach(square => square.on('pointerdown', this.onDragStart))
-        //this._squares.forEach(square => square.on('mousedown', this.onDragStart))
-        //this._squares.forEach(square => square.on('mousemove', this.onDragMove))
-        //this._squares.forEach(square => square.on('mouseup', this.onDragMove))
-        //this._squares.forEach(square => square.on('mouseout', this.onDragMove))
-        //                                           mouseupoutside
-
-        let selectedTile = this.selectedTile;
 
         for(let row = 0; row < 6; row++){
             for(let col = 0; col < 6; col++){
