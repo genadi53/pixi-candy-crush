@@ -85,13 +85,6 @@ export default class ProgressBar extends Container{
         } 
     }
 
-    _addXp(){
-        if(xp < 3600){
-            xp += 150;
-        } else { 
-            xp += 0;
-        }
-    }
 
     _showXp(number){
         let digits = [];

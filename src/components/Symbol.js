@@ -2,12 +2,10 @@ import gsap from 'gsap/all';
 import { Container, Sprite, Texture } from 'pixi.js';
 
 export default class Symbol extends Container{
-    constructor(texture, x, y, anchor){
+    constructor(texture, x, y){
         super();
         this._symbol = new Sprite(texture);
-        this._symbol.width = 101;
-        this._symbol.height = 101;
-        this._symbol.anchor.set(anchor);
+        this._symbol.anchor.set(0.5);
         this.x = x;
         this.y = y;
         
@@ -15,20 +13,26 @@ export default class Symbol extends Container{
         this.col = null;
 
         this.interactive = true;
-        this.buttonMode = true;
+        //this.buttonMode = true;
         this.dragging = false;
         this.selected = false;
 
+        this.pivot.set(50, 50);
+
         this.addChild(this._symbol);
-        //this.on('click', () => this.moveVerticaly(102))
     }
+
+    setPosition(row, column){
+        this.row = row;
+        this.col = column;
+        this.id = (row * 6) + this.col;
+    }
+
 
     moveVerticaly(val){
         gsap.fromTo(this._symbol,
             {
-                y: this._symbol.y,
-                duration: 0.1,
-                ease: 'linear'
+                y: this._symbol.y
             },
             {
                 y: `+=${val}`,
@@ -40,9 +44,7 @@ export default class Symbol extends Container{
     moveSideway(val){
         gsap.fromTo(this._symbol,
             {
-                x: this._symbol.x,
-                duration: 0.1,
-                ease: 'linear'
+                x: this._symbol.x
             },
             {
                 x: `+=${val}`,
@@ -55,17 +57,16 @@ export default class Symbol extends Container{
         gsap.fromTo(this._symbol,
             {
                 y: this._symbol.y,
-                duration: 0.2,
+                duration: 0.5,
                 alpha: this._symbol.alpha,
                 ease: 'linear'
             },
             {
                 y: `+=${val}`,
-                duration: 0.2,
+                duration: 0.5,
                 alpha: 1,
                 ease: 'linear'
             }); 
     }
 
-    
 }

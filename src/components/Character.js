@@ -36,6 +36,7 @@ export default class Character extends Container{
 
         this._libsRemoved = false; 
         this.on('click', this.removeLibs);
+        this.move();
         
     }
 
@@ -53,7 +54,17 @@ export default class Character extends Container{
             this._topLib.alpha = 0;
             this._libsRemoved = true;
 
-        }
-        
+        }    
     }
+
+    move(){
+        gsap.to(this, {
+            y: '+=15',
+            duration: 2,
+            yoyo: true,
+            repeat: -1,
+            ease: 'power1.inOut'
+        })
+    }
+
 }
