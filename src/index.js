@@ -5,6 +5,7 @@ if (process.env.NODE_ENV === 'development') {
   // required for pixi dev tools to work
   window.PIXI = PIXI;
   
+  
 }
 
 document.addEventListener('DOMContentLoaded', () => {
