@@ -1,7 +1,13 @@
-import { Container, Sprite, Texture } from 'pixi.js';
+import { Container, Graphics, Sprite, Texture } from 'pixi.js';
 import gsap from 'gsap/all';
 import Character from './Character';
- 
+
+
+import PixiPlugin from 'gsap/PixiPlugin';
+import MotionPathPlugin from 'gsap/MotionPathPlugin';
+
+gsap.registerPlugin(PixiPlugin, MotionPathPlugin);
+
 export default class LoadingBar extends Container{
     constructor(){
         super();
@@ -15,13 +21,13 @@ export default class LoadingBar extends Container{
 
         this._maskLeft = new Sprite(Texture.from('loadingBar_mask_left'));
         this._maskLeft.anchor.set(0.5);
-        this._maskLeft.x = -100;
+        this._maskLeft.x = -85;
 
         this._maskRight = new Sprite(Texture.from('loadingBar_mask_right'));
         this._maskRight.anchor.set(0.5);
-        this._maskRight.x = 100;
+        this._maskRight.x = 90;
 
-        // this._emement.mask = this._maskLeft;
+        //this._emement.mask = this._maskLeft;
         // this._emement.addChild(this._maskLeft);
 
         // this._emement.mask = this._maskRight;
@@ -31,12 +37,30 @@ export default class LoadingBar extends Container{
         this.character.zIndex = 0;
         this.character.scale.set(0.95)
       
-        
 
-        this.addChild(this.character, this._emement);
+        this.addChild(
+            this.character, 
+            this._emement,
+            this._glow, 
+            this._maskLeft, 
+            this._maskRight
+        );
+
+        this.load();
     }
 
     load(){
         const animation = gsap.timeline();
+        
+        // animation.to(this._glow, {
+        //     duration: 2,
+        //     motionPath: {
+        //         path: [{ x: 0, y: 160 }, { x: -160, y: 0 }, { x: 0, y: -160 }, { x: 160, y: 0 }],
+        //         type: "cubic",
+        //         autoRotate: true,
+        //         alignOrigin: [0.5, 0.5]
+        //       }
+        //     });
+
     }
 }

@@ -1,4 +1,4 @@
-import { Container, Sprite, Texture } from 'pixi.js';
+import { Container, Graphics, Sprite, Texture } from 'pixi.js';
 import Scene from './Scene';
 import gsap from 'gsap';
 import Footer from '../components/Footer';
@@ -10,7 +10,7 @@ import Moves from '../components/Moves';
 import ProgressBar from '../components/ProgressBar';
 import Tooltip from '../components/Tooltip';
 import Label from '../components/Label';
-import End from '../scenes/End';
+import End from '../components/End';
 import LoadingBar from '../components/LoadingBar';
 
 let done = false;
@@ -21,12 +21,10 @@ export default class Play extends Scene {
     footer.x = - window.innerWidth / 2;
     footer.y = window.innerHeight / 2 - footer.height;
     //this.addChild(footer);
-
-    //this._pressedKeys = [];
     
-    const fireLeft = new Fire('fire-left', -680, -20, -5, 10);
-    const fireRight = new Fire('fire-right', 720, -20, -15, 20);
-    this.addChild(fireLeft, fireRight);
+    this.fireLeft = new Fire('fire-left', -680, -20, -5, 10);
+    this.fireRight = new Fire('fire-right', 720, -20, -15, 20);
+    this.addChild(this.fireLeft, this.fireRight);
    
     //this._createLoadingScreen();
     await this._createMainScreen();
@@ -41,58 +39,84 @@ export default class Play extends Scene {
   }
 
   async _createMainScreen(){
-    const characterBig = new Character('characterBig', 0, 0);
-    const characterSmall = new Character('characterSmall', 690, -220);
-    characterSmall.scale.set(0.5);
-    this.addChild(characterBig, characterSmall);
+    this.characterBig = new Character('characterBig', 0, 0);
+    this.characterSmall = new Character('characterSmall', 690, -220);
+    this.characterSmall.scale.set(0.5);
 
-    const gameBoard = new GameBoard('board');
-    this.addChild(gameBoard);
+    this.characterBig.move();
+    this.characterSmall.move();
 
-    const moves = new Moves();
-    this.addChild(moves);
+    this.addChild(this.characterBig, this.characterSmall);
 
-    const bar = new ProgressBar();
-    this.addChild(bar);
+    this.gameBoard = new GameBoard('board');
+    this.addChild(this.gameBoard);
 
-    const tooltip = new Tooltip();
-    this.addChild(tooltip);
-    //gameBoard.on(GameBoard.events.MOVE_MADE, () => moves._setNextNumber(20));
+    this.moves = new Moves();
+    this.moves._setNextNumber(this.gameBoard._moves);
+    this.addChild(this.moves);
 
-    gameBoard.on(GameBoard.events.MOVE_MADE, 
+    this.bar = new ProgressBar();
+    this.addChild(this.bar);
+
+    this.tooltip = new Tooltip();
+    this.addChild(this.tooltip);
+
+    this.gameBoard.on(GameBoard.events.MOVE_MADE, 
       () => {
-        moves._setNextNumber(gameBoard._moves);
-        bar._fillBar();
-        gameBoard._score += 300;
-        bar._showXp(gameBoard._score);
+        this.moves._setNextNumber(this.gameBoard._moves);
+        this.bar._fillBar();
+        this.bar._showXp(this.gameBoard._score);
       });
 
+    this.gameBoard.on(GameBoard.events.END_SUCCESS,
+      () => {
+        this._hideMainScreen();
+        this._createEndScreen('win');
+      });
+    
+    this.gameBoard.on(GameBoard.events.END_FAIL,
+      () => {
+        this._hideMainScreen();
+        this._createEndScreen('fail');
+      });
 
   }
   
-  _createEndScreen(){
-    this.end = new End('win');
-    this.addChild(this.end);
-    this._addEventListeners();
+  _createEndScreen(result){
+    if(result === 'win'){
+       this.end = new End('win');
+       this.addChild(this.end);
+       this._addEventListeners();
+    } else {
+      this.end = new End('fail');
+      this.addChild(this.end);
+      this._addEventListeners();
+    }
   }
   
+  _hideMainScreen(){
+     const timeline = new gsap.timeline();
+
+     timeline
+        .fromTo(this.characterBig, { alpha: 1 }, { alpha: 0, duration: 1})
+        .fromTo(this.characterSmall, { alpha: 1 }, { alpha: 0, duration: 1}, '<')
+        .fromTo(this.gameBoard, { alpha: 1 }, { alpha: 0, duration: 1}, '<')
+        .fromTo(this.moves, { alpha: 1 }, { alpha: 0, duration: 1}, '<')
+        .fromTo(this.bar, { alpha: 1 }, { alpha: 0, duration: 1}, '<')
+        .fromTo(this.tooltip, { alpha: 1 }, { alpha: 0, duration: 1}, '<')
+  }
 
   _addEventListeners() {
     document.addEventListener('keydown', (key) => {
-      const currentKeyPressed = key.code;
-      if (
-        currentKeyPressed === 'Space' //&&
-        //!this._pressedKeys.includes(currentKeyPressed) &&
-        //!this._gameOver
-      ) {
-        //this._pressedKeys.push(currentKeyPressed);
-        this.end._handleClick(currentKeyPressed);
-        //this.bird.goUp(70);
+      const keyPressed = key.code;
+      if (keyPressed === 'Space') {
+        
+        this.end.on(End.events.RESTART, 
+          () => {
+            this.end._handleClick();
+            this._createMainScreen();
+          })
       }
-    });
-
-    document.addEventListener('keyup', (event) => {
-      //this._pressedKeys.splice(this._pressedKeys.indexOf(event.code), 1);
     });
   }
 

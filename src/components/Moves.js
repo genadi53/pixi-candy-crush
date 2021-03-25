@@ -27,10 +27,6 @@ export default class Moves extends Container{
         this.addChild(this._background, this._moves);
      
         this._createNumbers();
-        
-
-        this._setNextNumber(currentNumber);
-        this.on(GameBoard.events.MOVE_MADE, () => this._setNextNumber(currentNumber));
 
     }
 
@@ -41,10 +37,9 @@ export default class Moves extends Container{
         }
     }
 
-    _setNextNumber(){
+    _setNextNumber(newNumber){
         this.removeChild(leftNumber, rightNumber);
 
-        let newNumber = currentNumber - 1;
         if(newNumber > 0){
 
             leftNumber = new Sprite(this._numberTextures[(Math.floor(newNumber / 10))]);
