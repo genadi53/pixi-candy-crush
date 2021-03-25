@@ -154,6 +154,7 @@ export default class GameBoard extends Container {
              
               if(this._squares[row][col]._texture === this._squares[row][col+1]._texture){
                   matchLength += 1;
+              } else {
               } else { 
                   checkedHorizontal = true;
               }
@@ -179,6 +180,30 @@ export default class GameBoard extends Container {
     findVerticalMatches(){
         let matchLength = 1;
         let checkedVertical = false;
+
+        
+   
+   for (let col = 0; col < 6; col++) {
+    matchLength = 1;
+    for (let row = 0; row < 6; row++) {
+        checkedVertical = false;
+
+        if (row === ROWS-1) {
+            checkedVertical = true;
+        } else {
+            if (this._squares[row][col]._texture === this._squares[row+1][col]._texture) {
+                matchLength += 1;
+            } else {
+                checkedVertical = true;
+            }
+        }
+    
+        if (checkedVertical) {
+            if (matchLength >= 3) {
+                console.log(`row: ${row+1-matchLength}\ncolumn: ${col}\nlenght: ${matchLength}\nvertical`)
+                this.matches.push({ column: col, row:row+1-matchLength,
+                    length: matchLength, horizontal: false });
+            }
    
         for (let col = 0; col < 6; col++) {
             matchLength = 1;
