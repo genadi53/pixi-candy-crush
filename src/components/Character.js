@@ -36,7 +36,7 @@ export default class Character extends Container{
 
         this._libsRemoved = false; 
         this.on('click', this.removeLibs);
-        this.move();
+        //this.move();
         
     }
 

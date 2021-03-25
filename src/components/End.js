@@ -1,8 +1,8 @@
 import { Container, Graphics, Sprite, Text, Texture} from 'pixi.js';
 import gsap from 'gsap/all';
-import Label from '../components/Label';
-import Character from '../components/Character';
-import Button from '../components/Button';
+import Label from './Label';
+import Character from './Character';
+import Button from './Button';
 
 export default class End extends Container {
   constructor(result) {
@@ -30,37 +30,32 @@ export default class End extends Container {
     this.addChild(this._label, this._button);
     this.on('keyup', () => this._handleClick());
     this.on('keydown', () => this._handleClick());
-    //this.on('click', () => this._handleClick());
   }
 
-  static get event() {
+
+  static get events(){
     return {
-      END_FAIL: 'end_fail',
-      END_SUCCESS: 'end_success',
-      RESTART: 'restart'
-    };
-  }
+        RESTART: 'restart'
+    }
+}
 
-  async _handleClick(key) {
-    console.log(key);
-
-    if(key === 'Space'){
+  async _handleClick() {
 
       if(this.visible){
         await this.hide();
+        this.emit(End.events.RESTART);
       } else {
         await this.show();
       }
-
-    }
   }
 
 
   async show() {
     this.visible = true;
-    await gsap.fromTo(
-      this,
-      { alpha: 0 },
+    await gsap.fromTo(this,
+      { 
+        alpha: 0 
+      },
       {
         duration: 0.5,
         alpha: 1,
@@ -70,7 +65,13 @@ export default class End extends Container {
 
   async hide() {
     this.visible = false;
-    await gsap.fromTo(this, { alpha: 1 }, { alpha: 0, duration: 0.5 });
+    await gsap.fromTo(this, 
+      { 
+        alpha: 1 
+      }, {
+        alpha: 0, 
+        duration: 0.5 
+      });
   }
 
 

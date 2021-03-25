@@ -98,12 +98,6 @@ export default class ProgressBar extends Container{
             number = Math.floor(number/10);
         }
 
-
-        // let firstDigit = new Sprite(this._numberTextures[digits[3]]);
-        // let secondDigit = new Sprite(this._numberTextures[digits[2]]);
-        // let thirdDigit = new Sprite(this._numberTextures[digits[1]]);
-        // let forthDigit = new Sprite(this._numberTextures[digits[0]]);
-
         this._xp.firstDigit = new Sprite(this._numberTextures[digits[3]]);
         this._xp.secondDigit = new Sprite(this._numberTextures[digits[2]]);
         this._xp.thirdDigit = new Sprite(this._numberTextures[digits[1]]);
