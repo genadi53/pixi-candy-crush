@@ -1,7 +1,6 @@
 import { Container, Sprite, Texture } from 'pixi.js';
 import GameBoard from './GameBoard';
 
-let xp = 0;
 let firstTime = true;
 
 export default class ProgressBar extends Container{
@@ -38,14 +37,13 @@ export default class ProgressBar extends Container{
         this._createNumbers();
 
         this._progressX = -260;
-        this.on(GameBoard.events.ADD_POINTS, () => {
-            this._fillBar();
-            this._addXp();
-            this._showXp(xp)
-        });
 
     }
 
+    /** 
+    *  @description Creates textures from number accets
+    *  @private
+    */
     _createNumbers(){
         for(let i = 0; i < 10; i++){
             const texture = new Texture.from(`${i}`);
@@ -53,6 +51,10 @@ export default class ProgressBar extends Container{
         }
     }
 
+    /** 
+    *  @description Set the properties of the bar's ends
+    *  @private
+    */
     _setBarEnds(){
         this._left.anchor.set(0.5, 0);
         this._left.y = 433;
@@ -66,6 +68,9 @@ export default class ProgressBar extends Container{
         this.addChild(this._right, this._left);
     }
 
+    /** 
+    *  @description fills the middle of the bar when move is made
+    */
     _fillBar(){
 
         if(firstTime){
@@ -81,11 +86,15 @@ export default class ProgressBar extends Container{
             middle.y = 433;
             middle.x = this._progressX;
             this.addChild(middle);
-            this._progressX += 25;
+            this._progressX += 30;
         } 
     }
 
 
+    /** 
+    *  @description changes the number of xp above the bar
+    *  @param {Number} number current Xp shown
+    */
     _showXp(number){
         let digits = [];
 

@@ -1,10 +1,9 @@
 import { Container, Sprite, Texture } from 'pixi.js';
 import GameBoard from './GameBoard';
 
-let rightNumber;
-let leftNumber;
-let centerNumber; 
-let currentNumber = 21;
+let rightDigit;
+let leftDigit;
+let centerDigit; 
 
 export default class Moves extends Container{
     constructor(){
@@ -30,6 +29,10 @@ export default class Moves extends Container{
 
     }
 
+    /**
+     *  @description Creates textures from number accets
+     *  @private
+     */
     _createNumbers(){
         for(let i = 0; i < 10; i++){
             const texture = new Texture.from(`${i}`);
@@ -37,30 +40,34 @@ export default class Moves extends Container{
         }
     }
 
+    /**
+     *  @description Creates and set the params for the number of moves
+     *  @param {Number} newNumber number that will be displayed
+     *  @private
+     */
     _setNextNumber(newNumber){
-        this.removeChild(leftNumber, rightNumber);
+        this.removeChild(leftDigit, rightDigit);
 
         if(newNumber > 0){
 
-            leftNumber = new Sprite(this._numberTextures[(Math.floor(newNumber / 10))]);
-            leftNumber.anchor.set(0.5, 1);
-            leftNumber.x = -25;
-            leftNumber.y = -55;
+            leftDigit = new Sprite(this._numberTextures[(Math.floor(newNumber / 10))]);
+            leftDigit.anchor.set(0.5, 1);
+            leftDigit.x = -25;
+            leftDigit.y = -55;
     
-            rightNumber = new Sprite(this._numberTextures[newNumber % 10]);
-            rightNumber.anchor.set(0.5, 1);
-            rightNumber.x = 25;
-            rightNumber.y = -55;
+            rightDigit = new Sprite(this._numberTextures[newNumber % 10]);
+            rightDigit.anchor.set(0.5, 1);
+            rightDigit.x = 25;
+            rightDigit.y = -55;
 
-            this.addChild(leftNumber, rightNumber);
-            currentNumber--;
+            this.addChild(leftDigit, rightDigit);
 
         } else if(newNumber === 0){
-            this.removeChild(centerNumber);
-            centerNumber = new Sprite(this._numberTextures[0]);
-            centerNumber.anchor.set(0.5, 1);
-            centerNumber.y = -55;
-            this.addChild(centerNumber);
+            this.removeChild(centerDigit);
+            centerDigit = new Sprite(this._numberTextures[0]);
+            centerDigit.anchor.set(0.5, 1);
+            centerDigit.y = -55;
+            this.addChild(centerDigit);
         }
     }
 }

@@ -1,6 +1,14 @@
 import { Container, Sprite, Texture } from 'pixi.js';
 import gsap from 'gsap/all';
 
+    /**
+    *  @constructor
+    *  @param {string} name name of the Sprite
+    *  @param {Number} x x-coordinate of the fire
+    *  @param {Number} y y-coordinate of the fire
+    *  @param {Number} glowX x-coordinate of the glow
+    *  @param {Number} glowY x-coordinate of the glow
+    */
 export default class Fire extends Container{
     constructor(name, x, y, glowX, glowY){
         super();
@@ -20,7 +28,4 @@ export default class Fire extends Container{
         this.x = x;
         this.y = y;        
     }
-
-
-
 }

@@ -15,6 +15,10 @@ export default class Button extends Container{
     }
 
     
+    /**
+     *  @description Sets the properties of the Button and its text
+     *  @private
+     */
   _createButton(){
 
     this._button.lineStyle(5, COLOR, 1);

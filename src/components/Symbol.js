@@ -1,6 +1,12 @@
 import gsap from 'gsap/all';
 import { Container, Sprite, Texture } from 'pixi.js';
 
+/**
+ *  @constructor
+ *  @param {Number} x x-coordinate
+ *  @param {Number} y y-coordinate 
+ *  @param {Pixi Texture} texture texture for the Sprite
+ */
 export default class Symbol extends Container{
     constructor(texture, x, y){
         super();
@@ -13,22 +19,29 @@ export default class Symbol extends Container{
         this.col = null;
 
         this.interactive = true;
-        //this.buttonMode = true;
+        this.buttonMode = true;
         this.dragging = false;
         this.selected = false;
-
         this.pivot.set(50, 50);
 
         this.addChild(this._symbol);
     }
 
+    /**
+     *  @description set the row, column and id of the symbol
+     *  @param {Number} row row of the symbol
+     *  @param {Number} col column of the symbol
+     */
     setPosition(row, column){
         this.row = row;
         this.col = column;
         this.id = (row * 6) + this.col;
     }
 
-
+    /**
+     *  @description move the symbol by its y-coordinate 
+     *  @param {Number} val 
+     */
     moveVerticaly(val){
         gsap.fromTo(this._symbol,
             {
@@ -41,6 +54,10 @@ export default class Symbol extends Container{
             }); 
     }
 
+     /**
+     *  @description move the symbol by its x-coordinate 
+     *  @param {Number} val 
+     */
     moveSideway(val){
         gsap.fromTo(this._symbol,
             {
@@ -53,6 +70,10 @@ export default class Symbol extends Container{
             }); 
     }
 
+     /**
+     *  @description move the symbol by makeing it look like falling 
+     *  @param {Number} val 
+     */
     dropDownFromTop(val){
         gsap.fromTo(this._symbol,
             {

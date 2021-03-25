@@ -1,7 +1,12 @@
 import { Container, Sprite, Texture } from 'pixi.js';
 import gsap from 'gsap/all';
 
-
+/**
+ *  @constructor
+ *  @param {string} name name of the Character
+ *  @param {Number} x coordinate
+ *  @param {Number} y coordinat
+ */
 export default class Character extends Container{
     constructor(name, x, y){
         super();
@@ -41,6 +46,10 @@ export default class Character extends Container{
     }
 
     
+    /**
+     *  @description checks if the character have libs and adds/removes them
+     *  @private
+     */
     removeLibs(){
         if(this._libsRemoved){
 
@@ -57,9 +66,13 @@ export default class Character extends Container{
         }    
     }
 
+    /**
+     *  @description floats the character around
+     */
     move(){
         gsap.to(this, {
             y: '+=15',
+            x: '+=5',
             duration: 2,
             yoyo: true,
             repeat: -1,

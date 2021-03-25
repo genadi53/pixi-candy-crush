@@ -8,8 +8,9 @@ const ROWS = 6;
 const COLUMNS = 6;
 const TILEWIDTH = 102;
 
+// symbol textures
 const textures = [
-    'symbol_1', // texture_texture - 0
+    'symbol_1', 
     'symbol_2',
     'symbol_3',
     'symbol_4',
@@ -27,6 +28,15 @@ let filledSquares = [
 ];
 
 
+/**
+ * @property {Array} _squares 2d array filled with Symbols
+ * @property {Boolean} _gameOver Showing is the game over
+ * @property {Symbol} selectedTile The symbol the player is currently dragging
+ * @property {Number} _moves Number of moves left
+ * @property {Boolean} _settled Shows is there matches on the board
+ * @property {Array} _matches Array containing the mached tiles
+ * @property {Number} _score The amount of moves available to the players
+ */
 export default class GameBoard extends Container {
     constructor(name) {
         super();
@@ -37,13 +47,12 @@ export default class GameBoard extends Container {
         this._squares = Array.from(Array(ROWS), () => new Array(COLUMNS));
        
         this._gameOver = false;
-        this.matches = [];
+        this._matches = [];
         this.selectedTile = null;
-        this._transition = false;
         this._moves = 20;
         this._settled = false;
 
-        this.fillBoard();
+        this._fillBoard();
         this.stettleTheBoard();
 
         this._score = 0;
@@ -59,8 +68,12 @@ export default class GameBoard extends Container {
             RESTART: 'restart'
         }
     }
-
-    fillBoard(){
+    
+     /**
+     *  @description fills the board and _squares array with Symbols and adds them to the stage
+     *  @private
+     */
+    _fillBoard(){
 
         for (let row = 0; row < 6; row++) {
             for(let col = 0; col < 6; col++){
@@ -72,40 +85,49 @@ export default class GameBoard extends Container {
             }
         }
     }
-   
-    createSymbol(row, col){
+
+    /**
+     *  @description returns random number for the texture 
+     *  @returns {Number}
+     *  @private
+     */
+    getRandomTextureType() {
+        return Math.floor(Math.random() * textures.length);
+    }
+  
+    /**
+     *  @description creates new Symbol 
+     *  @param {Number} row row of the symbol
+     *  @param {Number} col column of the symbol
+     *  @returns {Symbol}
+     *  @private
+     */
+     createSymbol(row, col){
 
         const textureType = this.getRandomTextureType();
         const symbol = new Symbol(Texture.from(textures[textureType]), 
-        col * TILEWIDTH, row * TILEWIDTH);//, 0.5);
+        col * TILEWIDTH, row * TILEWIDTH);
         symbol._texture = textureType;
         symbol.isEmpty = false;
 
         symbol.on('pointerdown', () => {
-            this._symbolOnPointerDown(symbol);
+            this._onPointerDown(symbol);
         });
 
         symbol.on('pointerup', () => {
-            this._symbolOnPointerUp(symbol);
+            this._onPointerUp(symbol);
         });
           
         symbol.on('pointerupoutside', () => {
-            this._symbolOnPointerUpOutside();
+            this._onPointerUpOutside();
         });
-      
+
         symbol.on('pointerover', () => {
-            if (this._transition) return;
-            gsap.to(symbol, {
-              alpha: 0.8,
-              duration: 0,
-            });
+            gsap.to(symbol, { alpha: 0.75 });
         });
       
         symbol.on('pointerout', () => {
-            gsap.to(symbol, {
-              alpha: 1,
-              duration: 0,
-            });
+            gsap.to(symbol, { alpha: 1 });
         });
 
         symbol.setPosition(row, col);
@@ -114,10 +136,10 @@ export default class GameBoard extends Container {
 
     }
 
-    getRandomTextureType() {
-        return Math.floor(Math.random() * textures.length);
-    }
-  
+    /**
+     *  @description checks for horizontal matches and adds them to the array 
+     *  @private
+     */
     findHorizontalMatches(){
         let matchLength = 1;
         let checkedHorizontal = false;
@@ -140,7 +162,7 @@ export default class GameBoard extends Container {
           if(checkedHorizontal){
               if(matchLength >= 3){
                  // console.log(`row: ${row}\ncolumn: ${col+1-matchLength}\nlenght: ${matchLength}\nhorizontal`)
-                  this.matches.push({ column: col+1-matchLength, row:row,
+                  this._matches.push({ column: col+1-matchLength, row:row,
                       length: matchLength, horizontal: true });
                 }
               matchLength = 1;
@@ -150,6 +172,10 @@ export default class GameBoard extends Container {
         }
     }
 
+    /**
+     *  @description checks for vertical matches and adds them to the array 
+     *  @private
+     */
     findVerticalMatches(){
         let matchLength = 1;
         let checkedVertical = false;
@@ -172,7 +198,7 @@ export default class GameBoard extends Container {
                 if (checkedVertical) {
                     if (matchLength >= 3) {
                         //console.log(`row: ${row+1-matchLength}\ncolumn: ${col}\nlenght: ${matchLength}\nvertical`)
-                        this.matches.push({ column: col, row:row+1-matchLength,
+                        this._matches.push({ column: col, row:row+1-matchLength,
                             length: matchLength, horizontal: false });
                     }
                     
@@ -187,10 +213,14 @@ export default class GameBoard extends Container {
         this.findVerticalMatches();    
     }
 
+    /**
+     *  @description loops try the matches and remove Symbols from the scene
+     *  @private
+     */
     breakMatches(){
 
-        for(let i = 0; i < this.matches.length; i++){
-            let match = this.matches[i];
+        for(let i = 0; i < this._matches.length; i++){
+            let match = this._matches[i];
             let rowOffset = 0; let columnOffset = 0;
             for(let j = 0; j < match.length; j++){
       
@@ -199,7 +229,6 @@ export default class GameBoard extends Container {
                     this._squares[match.row][match.column+columnOffset]._texture = -1;
                     filledSquares[match.row][match.column+columnOffset] = 0;
                     this.removeChild(this._squares[match.row][match.column+columnOffset]);
-                    //this._squares[match.row][match.column+columnOffset] = null;
                     columnOffset++;
       
                 }
@@ -209,7 +238,6 @@ export default class GameBoard extends Container {
                     this._squares[match.row + rowOffset][match.column]._texture = -1;
                     filledSquares[match.row + rowOffset][match.column] = 0;
                     this.removeChild(this._squares[match.row + rowOffset][match.column]);
-                    //this._squares[match.row + rowOffset][match.column] = null;
                     rowOffset++;
       
                 }
@@ -218,9 +246,13 @@ export default class GameBoard extends Container {
             }
             this.addXp(match.length);
         }
-        this.matches = [];
+        this._matches = [];
     }
 
+     /**
+     *  @description checks for empty squares and shifts the ones above them down
+     *  @private
+     */
     shiftTiles() {
        
         for (let col = 0; col < 6; col++) {
@@ -234,20 +266,14 @@ export default class GameBoard extends Container {
                     if(filledSquares[row][col]){
 
                         this._squares[spaceY][col] = this._squares[row][col];
-                        //this._squares[row][col] = null
                         
                         filledSquares[row][col] = 0;
-                        filledSquares[spaceY][col] = 1;
-                
-
-                        //this._squares[row][col].
-                        //dropDownFromTop((spaceY - row) * TILEWIDTH);
+                        filledSquares[spaceY][col] = 1
                         
                         gsap.fromTo(this._squares[row][col], {
                             y: this._squares[row][col].y,
                           }, {
                             y: `+=${((spaceY - row)  * TILEWIDTH)}`,
-                            ease: 'linear',
                             duration: 0.5,
                           });
 
@@ -270,6 +296,10 @@ export default class GameBoard extends Container {
         }
     }
 
+     /**
+     *  @description loops try the left empty tiles and creates Symbols to fill them
+     *  @private
+     */
     async fillEmptyTop(){
         for(let row = 0; row < 6; row++){
             for(let col = 0; col < 6; col++){
@@ -287,7 +317,6 @@ export default class GameBoard extends Container {
                         y: -100,
                       }, {
                         y: row * TILEWIDTH,
-                        ease: 'linear',
                         duration: 0.5,
                       });
                     
@@ -296,6 +325,14 @@ export default class GameBoard extends Container {
         }
     }
 
+     /**
+     *  @description swaps the positions of 2 tiles in the _squares array and on the scene
+     *  @param {Number} row1 row of the first symbol
+     *  @param {Number} col1 column of the first symbol
+     *  @param {Number} row row of the second symbol
+     *  @param {Number} col column of the second symbol
+     *  @private
+     */
     async swap(row1, col1, row2, col2) {
     
         if(this.isAdjacent(row1, col1, row2, col2)){
@@ -309,13 +346,12 @@ export default class GameBoard extends Container {
             this._squares[row2][col2].setPosition(row2, col2);
 
 
-            this.matches = [];
+            this._matches = [];
             this.findMatches();
 
         
 
-            if(this.matches.length > 0){
-                // let result = this.moveTiles(row1, col1, row2, col2);
+            if(this._matches.length > 0){
                 if(row1 === row2 && col1 < col2){
                     this._squares[row1][col1].moveSideway(-TILEWIDTH);
                     this._squares[row2][col2].moveSideway(TILEWIDTH);
@@ -357,6 +393,16 @@ export default class GameBoard extends Container {
         }
     }
 
+    
+    /**
+     *  @description checks is 2 tiles are adjacent
+     *  @param {Number} row1 row of the first symbol
+     *  @param {Number} col1 column of the first symbol
+     *  @param {Number} row row of the second symbol
+     *  @param {Number} col column of the second symbol
+     *  @returns {Boolean}
+     *  @private
+     */
     isAdjacent(row1, col1, row2, col2){   
         return (
             (Math.abs(row1 - row2) === 1 && col1 === col2) || 
@@ -364,44 +410,47 @@ export default class GameBoard extends Container {
     }
 
 
-    _symbolOnPointerUpOutside() {
+    /**
+     *  @description resets current Symbol 
+     *  @private
+     */
+    _onPointerUpOutside() {
         if (this.selectedTile === null) return;
-        gsap.to(this.selectedTile.scale, {
-          x: 1,
-          y: 1,
-          duration: 0.05,
-          ease: 'linear',
-        });
+        gsap.to(this.selectedTile.scale, { x: 1, y: 1, duration: 0.1});
     }
 
-    async _symbolOnPointerUp(symbol) {
+    /**
+     *  @description if there is selected Symbol then swap it with the current
+     *  @param {Symbol} symbol 
+     *  @private
+     */
+    async _onPointerUp(symbol) {
 
-        if (this.selectedTile === null || this._transition) return;
-    
-        gsap.to(this.selectedTile.scale, {
-          x: 1,
-          y: 1,
-          duration: 0.05,
-          ease: 'linear',
-        });
-    
+        if (this.selectedTile === null) return;
+        gsap.to(this.selectedTile.scale, { x: 1, y: 1, duration: 0.1});
+        
         if (this.selectedTile.id === symbol.id) return;
     
         this.swap(this.selectedTile.row, this.selectedTile.col, symbol.row, symbol.col);
-
         this.selectedTile = null;
     }
     
-    _symbolOnPointerDown(symbol) {
-
-        if (this._transition) return;
-
+    /**
+     *  @description selects current Symbol
+     *  @param {Symbol} symbol 
+     *  @private
+     */
+    _onPointerDown(symbol) {
         this.selectedTile = symbol;
-        symbol.alpha = 0.5;
     }
     
+    /**
+     *  @description add amount of Xp for the match
+     *  @param {Number} matchLength length of the match
+     *  @private
+     */
     addXp(matchLength){
-        console.log(this._score, matchLength);
+
         if(matchLength > 3){
             this._score += (((matchLength - 3) * 150) + 300);
         } else this._score += 300;
@@ -413,11 +462,14 @@ export default class GameBoard extends Container {
     }
 
 
-    async stettleTheBoard(){
+    /**
+     *  @description after the board is created or move is made checks for matches, removes them and fill the empty tiles
+     *  @private
+     */
+    stettleTheBoard(){
 
         this._settled = false;
-
-        this.matches = [];
+        this._matches = [];
         this.findMatches();
         this.breakMatches();
         this.shiftTiles();

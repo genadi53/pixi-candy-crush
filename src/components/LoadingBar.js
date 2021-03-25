@@ -2,12 +2,6 @@ import { Container, Graphics, Sprite, Texture } from 'pixi.js';
 import gsap from 'gsap/all';
 import Character from './Character';
 
-
-import PixiPlugin from 'gsap/PixiPlugin';
-import MotionPathPlugin from 'gsap/MotionPathPlugin';
-
-gsap.registerPlugin(PixiPlugin, MotionPathPlugin);
-
 export default class LoadingBar extends Container{
     constructor(){
         super();
@@ -51,16 +45,5 @@ export default class LoadingBar extends Container{
 
     load(){
         const animation = gsap.timeline();
-        
-        // animation.to(this._glow, {
-        //     duration: 2,
-        //     motionPath: {
-        //         path: [{ x: 0, y: 160 }, { x: -160, y: 0 }, { x: 0, y: -160 }, { x: 160, y: 0 }],
-        //         type: "cubic",
-        //         autoRotate: true,
-        //         alignOrigin: [0.5, 0.5]
-        //       }
-        //     });
-
     }
 }

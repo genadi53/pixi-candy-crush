@@ -13,7 +13,6 @@ import Label from '../components/Label';
 import End from '../components/End';
 import LoadingBar from '../components/LoadingBar';
 
-let done = false;
 export default class Play extends Scene {
   async onCreated() {
 
@@ -32,12 +31,18 @@ export default class Play extends Scene {
 
   }
 
+   /** 
+    *  @description creates the loading Screen
+    */
   _createLoadingScreen(){
     const loadingBar = new LoadingBar();
     this.addChild(loadingBar);
 
   }
 
+  /** 
+   *  @description creates the main Screen of the game and sets all game elements
+   */
   async _createMainScreen(){
     this.characterBig = new Character('characterBig', 0, 0);
     this.characterSmall = new Character('characterSmall', 690, -220);
@@ -82,6 +87,10 @@ export default class Play extends Scene {
 
   }
   
+  /** 
+   *  @description creates the end screen according to the result
+   *  @param {String} result game result
+   */
   _createEndScreen(result){
     if(result === 'win'){
        this.end = new End('win');
@@ -94,6 +103,9 @@ export default class Play extends Scene {
     }
   }
   
+  /** 
+   *  @description hides the main screen
+   */
   _hideMainScreen(){
      const timeline = new gsap.timeline();
 
@@ -106,6 +118,9 @@ export default class Play extends Scene {
         .fromTo(this.tooltip, { alpha: 1 }, { alpha: 0, duration: 1}, '<')
   }
 
+  /** 
+   *  @description add event listener of keypress, needed for restarting the game
+   */
   _addEventListeners() {
     document.addEventListener('keydown', (key) => {
       const keyPressed = key.code;
