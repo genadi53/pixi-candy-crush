@@ -67,7 +67,8 @@ export default class Splash extends Scene {
       loadingRight: Assets.images['loading-right'],
 
       label_win: Assets.images['label-passed'],
-      label_fail: Assets.images['label-failed'],
+      // label-failed
+      label_fail: Assets.images['labe-failed'],
 
       loadingBar: Assets.images['loading-bar'],
       loadingBar_mask_left: Assets.images['loading-bar-mask-left'],
