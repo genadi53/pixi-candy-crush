@@ -46,7 +46,6 @@ export default class Splash extends Scene {
       movesBg: Assets.images['moves-bg'],
       moves: Assets.images.moves,
 
-      m1: Assets.images['-1'],
       0: Assets.images['0'],
       1: Assets.images['1'],
       2: Assets.images['2'],
