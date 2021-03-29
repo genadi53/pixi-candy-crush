@@ -148,28 +148,26 @@ export default class GameBoard extends Container {
             for(let col = 0; col < 6; col++){
             checkedHorizontal = false;
 
-          if (col === COLUMNS-1) {
-              checkedHorizontal = true;
-          } else {
-             
-              if(this._squares[row][col]._texture === this._squares[row][col+1]._texture){
-                  matchLength += 1;
-              } else {
-              } else { 
-                  checkedHorizontal = true;
-              }
-          }
-               
-          if(checkedHorizontal){
-              if(matchLength >= 3){
-                 // console.log(`row: ${row}\ncolumn: ${col+1-matchLength}\nlenght: ${matchLength}\nhorizontal`)
-                  this._matches.push({ column: col+1-matchLength, row:row,
-                      length: matchLength, horizontal: true });
+                if (col === COLUMNS-1) {
+                    checkedHorizontal = true;
+                } else {
+                    
+                    if(this._squares[row][col]._texture === this._squares[row][col+1]._texture){
+                        matchLength += 1;
+                    } else { 
+                        checkedHorizontal = true;
+                    }
                 }
-              matchLength = 1;
-            }
+                    
+                if(checkedHorizontal){
+                    if(matchLength >= 3){
+                        this._matches.push({ column: col+1-matchLength, row:row,
+                            length: matchLength, horizontal: true });
+                        }
+                    matchLength = 1;
+                    }
 
-        }
+            }
         }
     }
 
@@ -183,33 +181,11 @@ export default class GameBoard extends Container {
 
         
    
-   for (let col = 0; col < 6; col++) {
-    matchLength = 1;
-    for (let row = 0; row < 6; row++) {
-        checkedVertical = false;
-
-        if (row === ROWS-1) {
-            checkedVertical = true;
-        } else {
-            if (this._squares[row][col]._texture === this._squares[row+1][col]._texture) {
-                matchLength += 1;
-            } else {
-                checkedVertical = true;
-            }
-        }
-    
-        if (checkedVertical) {
-            if (matchLength >= 3) {
-                console.log(`row: ${row+1-matchLength}\ncolumn: ${col}\nlenght: ${matchLength}\nvertical`)
-                this.matches.push({ column: col, row:row+1-matchLength,
-                    length: matchLength, horizontal: false });
-            }
-   
-        for (let col = 0; col < 6; col++) {
-            matchLength = 1;
+    for (let col = 0; col < 6; col++) {
+        matchLength = 1;
             for (let row = 0; row < 6; row++) {
                 checkedVertical = false;
-                
+
                 if (row === ROWS-1) {
                     checkedVertical = true;
                 } else {
@@ -219,19 +195,17 @@ export default class GameBoard extends Container {
                         checkedVertical = true;
                     }
                 }
-                
+            
                 if (checkedVertical) {
                     if (matchLength >= 3) {
-                        //console.log(`row: ${row+1-matchLength}\ncolumn: ${col}\nlenght: ${matchLength}\nvertical`)
                         this._matches.push({ column: col, row:row+1-matchLength,
                             length: matchLength, horizontal: false });
                     }
-                    
-                    matchLength = 1;
                 }
-            }
-        }  
-    }
+
+            }  
+        }
+ }
 
     findMatches(){
         this.findHorizontalMatches();
